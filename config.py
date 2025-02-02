@@ -13,6 +13,19 @@ keysBind = {
     }
 }
 
+item_list = {"resources":
+    {
+        "wood": {"max_stack": 16, "sprite": "wood.png"},
+        "stone": {"max_stack": 16, "sprite": "stone.png"},
+    },
+    "tools":
+        {
+            "axe": {"max_stack": 1, "sprite": "axe.png"},
+            "pickaxe": {"max_stack": 1, "sprite": "pickaxe.png"},
+        }
+}
+
+
 idle_anim = {
     "down": {"row": 0, "start_col": 0, "num_frames": 8, "frame_width": 48, "frame_height": 64},
     "left": {"row": 1, "start_col": 0, "num_frames": 8, "frame_width": 48, "frame_height": 64},

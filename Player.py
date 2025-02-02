@@ -1,6 +1,21 @@
 import pygame
-from config import screen_width, screen_height, keysBind
+from config import screen_width, screen_height, keysBind, item_list
 from anim import setup_anim
+
+
+def get_input_direction(pressed_keys):
+    direction = pygame.Vector2(0, 0)
+    # Рух за клавішами
+    if any(pressed_keys[k] for k in keysBind["horizontal"]["right"]): direction.x += 1
+    if any(pressed_keys[k] for k in keysBind["horizontal"]["left"]): direction.x -= 1
+    if any(pressed_keys[k] for k in keysBind["vertical"]["up"]): direction.y -= 1
+    if any(pressed_keys[k] for k in keysBind["vertical"]["down"]): direction.y += 1
+
+    if direction.length() > 0:
+        direction = direction.normalize()
+
+    return direction
+
 
 class Player:
     def __init__(self):
@@ -28,22 +43,28 @@ class Player:
         self.hitbox = pygame.Rect(0, 0, 16, 32)
         self.update_hitbox()
 
+        # Інвентар
+        self.inventory = {}
+
+    def remove_inventory(self, item):
+        if item in self.inventory:
+            if self.inventory[item] > 0:
+                self.inventory[item] -= 1
+            if self.inventory[item] == 0:
+                self.inventory.pop(item)
+
+    def add_inventory(self, item):
+        if item in item_list["resources"]:
+            if item not in self.inventory:
+                self.inventory[item] = 0
+            if self.inventory[item] < item_list["resources"][item]["max_stack"]:
+                self.inventory[item] += 1
+
+    def get_inventory(self):
+        return self.inventory
+
     def update_hitbox(self):
         self.hitbox.center = self.pos + pygame.Vector2(0, 8)
-
-    def get_input_direction(self, pressed_keys):
-        direction = pygame.Vector2(0, 0)
-        # Рух за клавішами
-        if any(pressed_keys[k] for k in keysBind["horizontal"]["right"]): direction.x += 1
-        if any(pressed_keys[k] for k in keysBind["horizontal"]["left"]): direction.x -= 1
-        if any(pressed_keys[k] for k in keysBind["vertical"]["up"]): direction.y -= 1
-        if any(pressed_keys[k] for k in keysBind["vertical"]["down"]): direction.y += 1
-
-        # Нормалізація діагонального руху
-        if direction.length() > 0:
-            direction = direction.normalize()
-
-        return direction
 
     def update_facing(self, direction):
         if direction.x > 0:
@@ -56,7 +77,6 @@ class Player:
             self.facing = 'up'
 
     def update_state(self):
-        """Оновлює стан на основі вводу або ручних налаштувань"""
         if self.manual_state:
             self.state = self.manual_state
         else:
@@ -71,7 +91,7 @@ class Player:
 
     def move(self, pressed_keys, dt):
         # Оновлюємо вхід
-        self.input_direction = self.get_input_direction(pressed_keys)
+        self.input_direction = get_input_direction(pressed_keys)
 
         # Фізика руху (не змінює стан автоматично)
         if self.input_direction.length() > 0:
