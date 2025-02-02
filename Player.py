@@ -40,7 +40,8 @@ class Player:
         self.manual_state = None  # Дозволяє примусово задавати стан
         self.input_direction = pygame.Vector2()
 
-        self.hitbox = pygame.Rect(0, 0, 16, 32)
+        self.hitbox = pygame.Rect(0, 0, 32, 32)  # Змініть розмір на 32x32
+        self.hitbox.center = self.pos  # Центрування
         self.update_hitbox()
 
         # Інвентар
@@ -124,3 +125,5 @@ class Player:
         screen.blit(frame, draw_pos)
 
         # pygame.draw.rect(screen, (255,0,0), self.hitbox, 1)
+    def get_pos(self):
+        return self.pos
