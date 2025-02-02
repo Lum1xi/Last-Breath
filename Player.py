@@ -1,8 +1,6 @@
-from config import screen_width, screen_height, keysBind, idle_anim, move_anim
-from anim import setup_anim
 import pygame
-from math import sqrt
-
+from config import screen_width, screen_height, keysBind
+from anim import setup_anim
 
 class Player:
     def __init__(self):
@@ -11,7 +9,7 @@ class Player:
         self.velocity = pygame.Vector2(0, 0)
         self.max_speed = 180  # пікселів/секунду
         self.acceleration = 600
-        self.friction = 600
+        self.friction = 20
 
         # Анімації
         self.animations = {
@@ -24,7 +22,9 @@ class Player:
         self.animation_time = 0
         self.frame_duration = 100  # мс на кадр
 
-        # Хітбокс
+        self.manual_state = None  # Дозволяє примусово задавати стан
+        self.input_direction = pygame.Vector2()
+
         self.hitbox = pygame.Rect(0, 0, 16, 32)
         self.update_hitbox()
 
@@ -33,7 +33,6 @@ class Player:
 
     def get_input_direction(self, pressed_keys):
         direction = pygame.Vector2(0, 0)
-
         # Рух за клавішами
         if any(pressed_keys[k] for k in keysBind["horizontal"]["right"]): direction.x += 1
         if any(pressed_keys[k] for k in keysBind["horizontal"]["left"]): direction.x -= 1
@@ -47,26 +46,21 @@ class Player:
         return direction
 
     def update_facing(self, direction):
-        if direction.length() == 0:
-            return
-
-        angles = {
-            'up_right': 0,
-            'down_right': 45,
-            'down': 90,
-            'down_left': 135,
-            'down_left': 180,
-            'up_left': 225,
-            'up': 270,
-            'up_right': 315
-        }
-
-        angle = direction.angle_to(pygame.Vector2(0, -1))  # 0° = вгору
-        closest = min(angles.values(), key=lambda x: abs(x - angle))
-        self.facing = [k for k, v in angles.items() if v == closest][0]
+        if direction.x > 0:
+            self.facing = 'right'
+        elif direction.x < 0:
+            self.facing = 'left'
+        elif direction.y > 0:
+            self.facing = 'down'
+        elif direction.y < 0:
+            self.facing = 'up'
 
     def update_state(self):
-        self.state = 'move' if self.velocity.length() > 10 else 'idle'
+        """Оновлює стан на основі вводу або ручних налаштувань"""
+        if self.manual_state:
+            self.state = self.manual_state
+        else:
+            self.state = 'move' if self.input_direction.length() > 0 else 'idle'
 
     def update_animation(self, dt):
         self.animation_time += dt * 1000  # переведення в мілісекунди
@@ -76,15 +70,12 @@ class Player:
             self.frame_index = (self.frame_index + 1) % anim_frames
 
     def move(self, pressed_keys, dt):
-        # Вхідні дані гравця
-        input_dir = self.get_input_direction(pressed_keys)
+        # Оновлюємо вхід
+        self.input_direction = self.get_input_direction(pressed_keys)
 
-        # Оновлення напрямку
-        self.update_facing(input_dir if input_dir.length() > 0 else self.velocity)
-
-        # Фізика руху
-        if input_dir.length() > 0:
-            self.velocity += input_dir * self.acceleration * dt
+        # Фізика руху (не змінює стан автоматично)
+        if self.input_direction.length() > 0:
+            self.velocity += self.input_direction * self.acceleration * dt
         else:
             self.velocity -= self.velocity * self.friction * dt
 
@@ -92,12 +83,12 @@ class Player:
         if self.velocity.length() > self.max_speed:
             self.velocity.scale_to_length(self.max_speed)
 
-        # Оновлення позиції
+        # Оновлюємо позицію
         self.pos += self.velocity * dt
-        self.pos.x = pygame.math.clamp(self.pos.x, 0, screen_width)
-        self.pos.y = pygame.math.clamp(self.pos.y, 0, screen_height)
 
+        # Оновлюємо стан
         self.update_state()
+        self.update_facing(self.input_direction)
         self.update_hitbox()
 
     def draw(self, screen, dt):
@@ -112,5 +103,4 @@ class Player:
         draw_pos = self.pos - pygame.Vector2(frame.get_width() / 2, frame.get_height() / 2)
         screen.blit(frame, draw_pos)
 
-        # Відладка хітбоксу (опційно)
         # pygame.draw.rect(screen, (255,0,0), self.hitbox, 1)

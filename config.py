@@ -15,21 +15,17 @@ keysBind = {
 
 idle_anim = {
     "down": {"row": 0, "start_col": 0, "num_frames": 8, "frame_width": 48, "frame_height": 64},
-    "up": {"row": 1, "start_col": 0, "num_frames": 8, "frame_width": 48, "frame_height": 64},
-    "down_left": {"row": 2, "start_col": 0, "num_frames": 8, "frame_width": 48, "frame_height": 64},
-    "down_right": {"row": 3, "start_col": 0, "num_frames": 8, "frame_width": 48, "frame_height": 64},
-    "up_right": {"row": 4, "start_col": 0, "num_frames": 8, "frame_width": 48, "frame_height": 64},
-    "up_left": {"row": 5, "start_col": 0, "num_frames": 8, "frame_width": 48, "frame_height": 64},
+    "left": {"row": 1, "start_col": 0, "num_frames": 8, "frame_width": 48, "frame_height": 64},
+    "up": {"row": 3, "start_col": 0, "num_frames": 8, "frame_width": 48, "frame_height": 64},
+    "right": {"row": 5, "start_col": 0, "num_frames": 8, "frame_width": 48, "frame_height": 64},
 
 }
 
 move_anim = {
     "down": {"row": 0, "start_col": 0, "num_frames": 8, "frame_width": 48, "frame_height": 64},
-    "up": {"row": 1, "start_col": 0, "num_frames": 8, "frame_width": 48, "frame_height": 64},
-    "down_left": {"row": 2, "start_col": 0, "num_frames": 8, "frame_width": 48, "frame_height": 64},
-    "down_right": {"row": 3, "start_col": 0, "num_frames": 8, "frame_width": 48, "frame_height": 64},
-    "up_right": {"row": 4, "start_col": 0, "num_frames": 8, "frame_width": 48, "frame_height": 64},
-    "up_left": {"row": 5, "start_col": 0, "num_frames": 8, "frame_width": 48, "frame_height": 64},
+    "left": {"row": 1, "start_col": 0, "num_frames": 8, "frame_width": 48, "frame_height": 64},
+    "up": {"row": 3, "start_col": 0, "num_frames": 8, "frame_width": 48, "frame_height": 64},
+    "right": {"row": 5, "start_col": 0, "num_frames": 8, "frame_width": 48, "frame_height": 64},
 
 }
 screen_width, screen_height = 1280, 720

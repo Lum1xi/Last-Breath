@@ -1,10 +1,15 @@
 import pygame
+
 from config import idle_anim, move_anim
 
 
 def setup_anim(scale_factor=2, type="idle"):
-    config = idle_anim if type == "idle" else move_anim
-    sprite_sheet = pygame.image.load(f"assets\player\idle\idle.png").convert_alpha()
+    if type == "idle":
+        config = idle_anim
+        sprite_sheet = pygame.image.load(f"assets\\player\\idle\\idle.png").convert_alpha()
+    else:
+        config = move_anim
+        sprite_sheet = pygame.image.load(f"assets\\player\\move\\walk.png").convert_alpha()
 
     animations = {}
     for anim_name, data in config.items():

@@ -1,7 +1,7 @@
 import pygame
 from Player import Player
-from config import screen_width, screen_height, screen, frame_time
-from setup import setup  # Прибрано зайві імпорти
+from config import screen, frame_time
+from setup import setup
 
 # Ініціалізація
 pygame.init()
@@ -20,14 +20,12 @@ while running:
     dt = frame_time.tick(60) / 1000  # Обчислюємо dt перед оновленнями
     keys = pygame.key.get_pressed()
 
-    # Викликаємо move ВЗАГАЛІ ЗАВЖДИ для коректного тертя
+    # Викликаємо move завжди для коректного тертя
     player.move(keys, dt)
 
-    # Оновлюємо анімацію та позицію (всередині класу Player)
-    player.draw(screen, dt)
-
     # Відображення
+    screen.fill((0, 0, 0))  # Очищення екрану перед відмальовкою
+    player.draw(screen, dt)
     pygame.display.update()
-    screen.fill((0, 0, 0))  # Очищення екрану після відмальовки
 
 pygame.quit()
